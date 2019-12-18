@@ -39,8 +39,16 @@ export function normalizeSpacing( htmlString ) {
  */
 export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
-		// Use `el.childNodes[ 0 ].data.length` instead of `el.innerText.length`. For `el.innerText.length` which
-		// contains spaces mixed with `&nbsp;` Edge browser returns incorrect length.
+		// WPS Office may have `<span style="mso-spacerun:'yes';"><font>TEXT</font></span>`
+		// Need to preserve the text content.
+		if ( el.childNodes
+			&& el.childNodes[ 0 ]
+			&& el.childNodes[ 0 ].nodeType !== Node.TEXT_NODE ) {
+			return;
+		}
+
+    // Use `el.childNodes[ 0 ].data.length` instead of `el.innerText.length`. For `el.innerText.length` which
+    // contains spaces mixed with `&nbsp;` Edge browser returns incorrect length.
 		const innerTextLength = ( el.childNodes &&
 			el.childNodes[ 0 ] &&
 			el.childNodes[ 0 ].data &&
