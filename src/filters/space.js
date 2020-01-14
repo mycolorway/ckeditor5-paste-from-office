@@ -40,10 +40,11 @@ export function normalizeSpacing( htmlString ) {
 export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		// WPS Office may have `<span style="mso-spacerun:'yes';"><font>TEXT</font></span>`
+		// or `<span style="mso-spacerun:'yes';">TEXT</span>`
 		// Need to preserve the text content.
-		if ( el.childNodes
-			&& el.childNodes[ 0 ]
-			&& el.childNodes[ 0 ].nodeType !== Node.TEXT_NODE ) {
+		if ( el.childNodes && el.childNodes[ 0 ] &&
+			( el.childNodes[ 0 ].nodeType !== Node.TEXT_NODE ||
+				el.childNodes[ 0 ].data.trim().length > 0 ) ) {
 			return;
 		}
 
